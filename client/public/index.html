@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TracknRecycle - Textile Recycling App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        /* Add modal styles here if not in your CSS file */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        
+        .modal-content {
+            background-color: #fff;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 450px;
+            position: relative;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #999;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+        
+        .btn-primary {
+            width: 100%;
+            padding: 12px;
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        
+        .alert {
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+        }
+        
+        .alert-error {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        
+        .alert-success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .logout-menu {
+            position: absolute;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 10px;
+            z-index: 1001;
+        }
+
+        .map-controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .map-controls button {
+            flex: 1;
+            margin: 0 5px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="#" class="logo">TracknRecycle</span></a>
+            <div class="menu-toggle" id="mobile-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul class="nav-list">
+                <li><a href="#home" class="active">Home</a></li>
+                <li><a href="#recycle">Recycle</a></li>
+                <li><a href="#marketplace">Marketplace</a></li>
+                <li><a href="#rewards">Rewards</a></li>
+                <li><a href="#community">Community</a></li>
+                <li><a href="#" class="btn-login">Login</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Login Modal -->
+    <div class="modal" id="login-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="modal-logo">
+                <a href="#" class="logo">Trackn Recycle</span></a>
+            </div>
+            <h2>Welcome Back</h2>
+            
+            <div class="social-login">
+                <button type="button" class="btn-social google">
+                    <i class="fab fa-google"></i> Continue with Google
+                </button>
+                <button type="button" class="btn-social facebook">
+                    <i class="fab fa-facebook-f"></i> Continue with Facebook
+                </button>
+            </div>
+            
+            <div class="divider">
+                <span>or</span>
+            </div>
+            
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" required>
+                    <a href="#" class="forgot-password">Forgot password?</a>
+                </div>
+                <button type="submit" class="btn-primary">Login</button>
+                <p class="form-footer">Don't have an account? <a href="#" id="show-signup">Sign up</a></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div class="modal" id="signup-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="modal-logo">
+                <a href="#" class="logo">TracknRecycle</span></a>
+            </div>
+            <h2>Create Account</h2>
+            <form id="signup-form">
+                <div class="form-group">
+                    <label for="signup-name">Full Name</label>
+                    <input type="text" id="signup-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-email">Email</label>
+                    <input type="email" id="signup-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-password">Password</label>
+                    <input type="password" id="signup-password" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-confirm">Confirm Password</label>
+                    <input type="password" id="signup-confirm" required>
+                </div>
+                <button type="submit" class="btn-primary">Sign Up</button>
+                <p class="form-footer">Already have an account? <a href="#" id="show-login">Login</a></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Recycle Your Textiles, Earn Rewards</h1>
+                <p>Join our mission to reduce textile waste by finding recycling centers near you, trading pre-loved clothes, and earning points for sustainable actions.</p>
+                <div class="hero-btns">
+                    <a href="#recycle" class="btn-primary">Find Centers</a>
+                    <a href="#" class="btn-secondary">Sign Up Free</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="../image/marketplace/hero-image.jpg" alt="People recycling clothes">
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="container">
+            <div class="stat-card">
+                <i class="fas fa-tshirt"></i>
+                <h3>92M+</h3>
+                <p>Tons of textile waste annually</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-recycle"></i>
+                <h3>15%</h3>
+                <p>Textiles currently recycled</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-users"></i>
+                <h3>50K+</h3>
+                <p>Community members</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recycle Section -->
+    <section class="recycle" id="recycle">
+        <div class="container">
+            <h2 class="section-title">Find Recycling Centers</h2>
+            <div class="recycle-container">
+                <div class="map-container">
+                    <img src="../image/marketplace/map loaction.jpg" alt="Map showing recycling centers" style="width: 100%; height: auto; border-radius: 12px;">
+                </div>
+                <div class="map-controls">
+                    <button id="locate-me"><i class="fas fa-location-arrow"></i> Locate Me</button>
+                    <button id="filter-centers"><i class="fas fa-filter"></i> Filter</button>
+                </div>
+                <div class="recycle-info">
+                    <div class="recycle-tabs">
+                        <button class="tab-btn active" data-tab="guide">Recycling Guide</button>
+                        <button class="tab-btn" data-tab="schedule">Schedule Pickup</button>
+                    </div>
+                    <div class="tab-content active" id="guide">
+                        <h3>How to Prepare Your Textiles</h3>
+                        <ul class="guide-list">
+                            <li>
+                                <i class="fas fa-check-circle"></i>
+                                <span>Clean and dry all items</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-check-circle"></i>
+                                <span>Separate by material type</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-check-circle"></i>
+                                <span>Remove non-fabric components</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-check-circle"></i>
+                                <span>Bundle similar items together</span>
+                            </li>
+                        </ul>
+                        <a href="#" class="btn-link">View full guide <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                    <div class="tab-content" id="schedule">
+                        <h3>Schedule a Pickup</h3>
+                        <form id="pickup-form">
+                            <div class="form-group">
+                                <label for="pickup-date">Pickup Date</label>
+                                <input type="date" id="pickup-date" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="pickup-time">Time Window</label>
+                                <select id="pickup-time" required>
+                                    <option value="">Select time</option>
+                                    <option value="morning">9 AM - 12 PM</option>
+                                    <option value="afternoon">1 PM - 4 PM</option>
+                                    <option value="evening">5 PM - 8 PM</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="items-count">Approx. Items</label>
+                                <input type="number" id="items-count" min="1" max="50" required>
+                            </div>
+                            <button type="submit" class="btn-primary">Schedule Pickup</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Marketplace Section -->
+    <section class="marketplace" id="marketplace">
+        <div class="container">
+            <h2 class="section-title">Buy & Donate</h2>
+            <div class="marketplace-tabs">
+                <button class="market-tab active" data-category="all">All Items</button>
+                <button class="market-tab" data-category="clothing">Clothing</button>
+                <button class="market-tab" data-category="accessories">Accessories</button>
+                <button class="market-tab" data-category="home">Home Textiles</button>
+            </div>
+            <div class="marketplace-grid">
+                <!-- Items will be loaded via JavaScript -->
+            </div>
+            <div class="marketplace-cta">
+                <h3>Have items to donate or sell?</h3>
+                <a href="#" class="btn-primary">List Your Items</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rewards Section -->
+    <section class="rewards" id="rewards">
+        <div class="container">
+            <h2 class="section-title">Earn Rewards</h2>
+            <div class="rewards-container">
+                <div class="rewards-info">
+                    <h3>Recycle More, Earn More</h3>
+                    <p>For every kilogram of textiles you recycle through our platform, you earn EcoPoints that can be redeemed for discounts, products, or donations to environmental causes.</p>
+                    <div class="points-display">
+                        <div class="points-circle">
+                            <span id="user-points">0</span>
+                            <p>EcoPoints</p>
+                        </div>
+                        <div class="points-btns">
+                            <button class="btn-primary">Redeem</button>
+                            <button class="btn-secondary">How It Works</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="rewards-cards">
+                    <div class="reward-card">
+                        <div class="reward-icon bronze">
+                            <i class="fas fa-award"></i>
+                        </div>
+                        <h4>Bronze Tier</h4>
+                        <p>100 Points</p>
+ <ul>
+                            <li>$5 Gift Card</li>
+                            <li>Basic Badge</li>
+                        </ul>
+                    </div>
+                    <div class="reward-card">
+                        <div class="reward-icon silver">
+                            <i class="fas fa-award"></i>
+                        </div>
+                        <h4>Silver Tier</h4>
+                        <p>500 Points</p>
+                        <ul>
+                            <li>$25 Gift Card</li>
+                            <li>Premium Badge</li>
+                        </ul>
+                    </div>
+                    <div class="reward-card">
+                        <div class="reward-icon gold">
+                            <i class="fas fa-award"></i>
+                        </div>
+                        <h4>Gold Tier</h4>
+                        <p>1000 Points</p>
+                        <ul>
+                            <li>$50 Gift Card</li>
+                            <li>VIP Badge</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Community Section -->
+    <section class="community" id="community">
+        <div class="container">
+            <h2 class="section-title">Join Our Community</h2>
+            <div class="community-container">
+                <div class="community-posts">
+                    <div class="post-card">
+                        <div class="post-header">
+                            <img src="images/user1.jpg" alt="User " class="post-avatar">
+                            <div class="post-user">
+                                <h4>Sarah Johnson</h4>
+                                <p>2 days ago</p>
+                            </div>
+                        </div>
+                        <div class="post-content">
+                            <p>Just recycled 5kg of old clothes at the downtown center. The process was super easy and I earned 50 points! #SustainableLiving</p>
+                        </div>
+                        <div class="post-actions">
+                            <button><i class="far fa-heart"></i> 24</button>
+                            <button><i class="far fa-comment"></i> 5</button>
+                            <button><i class="fas fa-share"></i></button>
+                        </div>
+                    </div>
+                    <div class="post-card">
+                        <div class="post-header">
+                            <img src="images/user2.jpg" alt="User " class="post-avatar">
+                            <div class="post-user">
+                                <h4>Michael Chen</h4>
+                                <p>4 days ago</p>
+                            </div>
+                        </div>
+                        <div class="post-content">
+                            <p>Does anyone know if they accept damaged textiles? I have some torn jeans that I'd like to recycle rather than throw away.</p>
+                        </div>
+                        <div class="post-actions">
+                            <button><i class="far fa-heart"></i> 8</button>
+                            <button><i class="far fa-comment"></i> 12</button>
+                            <button><i class="fas fa-share"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="community-cta">
+                    <h3>Connect with Eco-Conscious People</h3>
+                    <p>Share tips, ask questions, and celebrate your recycling milestones with our growing community.</p>
+                    <form class="community-form">
+                        <textarea placeholder="What's on your mind?" rows="3"></textarea>
+                        <button type="submit" class="btn-primary">Post</button>
+                    </form>
+                    <div class="community-stats">
+                        <div class="stat">
+                            <i class="fas fa-users"></i>
+                            <p><span>50,000+</span> Members</p>
+                        </div>
+                        <div class="stat">
+                            <i class="fas fa-recycle"></i>
+                            <p><span>200,000+</span> Items Recycled</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <script>
+        // Basic auth functionality if you want it inline
+        document.addEventListener('DOMContentLoaded', function() {
+            // Login button functionality
+            const loginBtn = document.querySelector('.btn-login');
+            const loginModal = document.getElementById('login-modal');
+            const signupModal = document.getElementById('signup-modal');
+            const closeBtns = document.querySelectorAll('.close-modal');
+            
+            if (loginBtn) {
+                loginBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    loginModal.style.display = 'block';
+                });
+            }
+            
+            closeBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    loginModal.style.display = 'none';
+                    signupModal.style.display = 'none';
+                });
+            });
+            
+            window.addEventListener('click', function(e) {
+                if (e.target === loginModal) {
+                    loginModal.style.display = 'none';
+                }
+                if (e.target === signupModal) {
+                    signupModal.style.display = 'none';
+                }
+            });
+            
+            // Switch between login and signup
+            document.getElementById('show-signup')?.addEventListener('click', function(e) {
+                e.preventDefault();
+                loginModal.style.display = 'none';
+                signupModal.style.display = 'block';
+            });
+            
+            document.getElementById('show-login')?.addEventListener('click', function(e) {
+                e.preventDefault();
+                signupModal.style.display = 'none';
+                loginModal.style.display = 'block';
+            });
+            
+            // Demo login functionality
+            document.getElementById('login-form')?.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const email = document.getElementById('login-email').value;
+                const password = document.getElementById('login-password').value;
+                
+                if (email === 'tracknrecycle@gmail.com' && password === 'maha123') {
+                    alert('Login successful!');
+                    loginModal.style.display = 'none';
+                    loginBtn.innerHTML = '<i class="fas fa-user-circle"></i> Demo User';
+                    loginBtn.classList.add('logged-in');
+                    document.getElementById('user-points').textContent = '250';
+                } else {
+                    alert('Invalid credentials. Use tracknrecycle@gmail.com / maha123');
+                }
+            });
+            
+            // Demo signup functionality
+            document.getElementById('signup-form')?.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const name = document.getElementById('signup-name').value;
+                const email = document.getElementById('signup-email').value;
+                const password = document.getElementById('signup-password').value;
+                const confirm = document.getElementById('signup-confirm').value;
+                
+                if (password !== confirm) {
+                    alert('Passwords do not match');
+                    return;
+                }
+                
+                alert(`Account created for ${name}!`);
+                signupModal.style.display = 'none';
+                loginBtn.innerHTML = '<i class="fas fa-user-circle"></i> ' + name.split(' ')[0];
+                loginBtn.classList.add('logged-in');
+                document.getElementById('user-points').textContent = '0';
+            });
+    
+            // Tab functionality for recycling section
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    
+                    // Remove active class from all buttons and content
+                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    
+                    // Add active class to clicked button and corresponding content
+                    this.classList.add('active');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+    
+            // Schedule Pickup Form Functionality
+            const pickupForm = document.getElementById('pickup-form');
+            if (pickupForm) {
+                pickupForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const pickupDate = document.getElementById('pickup-date').value;
+                    const pickupTime = document.getElementById('pickup-time').value;
+                    const itemsCount = document.getElementById('items-count').value;
+                    
+                    if (!pickupDate || !pickupTime || !itemsCount) {
+                        alert('Please fill in all fields');
+                        return;
+                    }
+                    
+                    // Format the date for display
+                    const dateObj = new Date(pickupDate);
+                    const formattedDate = dateObj.toLocaleDateString('en-US', { 
+                        weekday: 'long', 
+                        month: 'long', 
+                        day: 'numeric' 
+                    });
+                    
+                    // Get the time window text
+                    let timeWindow = '';
+                    switch(pickupTime) {
+                        case 'morning':
+                            timeWindow = '9 AM - 12 PM';
+                            break;
+                        case 'afternoon':
+                            timeWindow = '1 PM - 4 PM';
+                            break;
+                        case 'evening':
+                            timeWindow = '5 PM - 8 PM';
+                            break;
+                    }
+                    
+                    // Create confirmation message
+                    const confirmationMessage = `
+                        Pickup Scheduled Successfully!
+                        
+                        Details:
+                        - Date: ${formattedDate}
+                        - Time: ${timeWindow}
+                        - Items: ${itemsCount}
+                        
+                        We'll send a confirmation email with more details.
+                    `;
+                    
+                    alert(confirmationMessage);
+                    
+                    // Reset the form
+                    pickupForm.reset();
+                    
+                    // Add points (if logged in)
+                    if (loginBtn.class )List.add('logged-in'); {
+                        const currentPoints = parseInt(document.getElementById('user-points').textContent);
+                        const pointsEarned = Math.min(5, Math.floor(itemsCount / 5)); // 1 point per 5 items, max 5
+                        const newPoints = currentPoints + pointsEarned;
+                        document.getElementById('user-points').textContent = newPoints;
+                        
+                        // Show points earned notification
+                        setTimeout(() => {
+                            alert(`You earned ${pointsEarned} EcoPoints for scheduling this pickup!`);
+                        }, 100);
+                    }
+                });
+            }
+    
+            // Set minimum date for pickup to today
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('pickup-date')?.setAttribute('min', today);
+    
+            // Locate Me button functionality
+            document.getElementById('locate-me')?.addEventListener('click', function() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        function(position) {
+                            alert(`Location found! Latitude: ${position.coords.latitude}, Longitude: ${position.coords.longitude}\n\nNow showing recycling centers near you.`);
+                            // In a real app, you would update the map here
+                        },
+                        function(error) {
+                            alert('Unable to retrieve your location. Please enable location services or enter your address manually.');
+                            console.error('Geolocation error:', error);
+                        }
+                    );
+                } else {
+                    alert('Geolocation is not supported by your browser. Please enter your address manually.');
+                }
+            });
+    
+            // Filter centers button functionality
+            document.getElementById('filter-centers')?.addEventListener('click', function() {
+                alert('Filter options would appear here in a full implementation.\n\nYou could filter by:\n- Accepted materials\n- Distance\n- Opening hours\n- Ratings');
+            });
+        });
+    </script>
+    <script>
+        // Marketplace Items Data
+        const marketplaceItems = [
+            {
+                id: 1,
+                title: "Vintage Denim Jacket",
+                category: "clothing",
+                price: 1000,
+                image: "../image/marketplace/denim-jacket.jpg",
+                type: "buy",
+                condition: "Good",
+                seller: "EcoFashionista"
+            },
+            {
+                id: 2,
+                title: "Handmade Cotton Tote Bag",
+                category: "accessories",
+                price: 600,
+                image: "../image/marketplace/Handmade Cotton Tote Bag.jpeg",
+                type: "buy",
+                condition: "New",
+                seller: "GreenLiving"
+            },
+            {
+                id: 3,
+                title: "Wool Sweater Collection",
+                category: "clothing",
+                price: 0,
+                image: "../image/marketplace/Wool Sweater Collection.webp",
+                type: "donate",
+                condition: "Fair",
+                seller: "CommunityCenter"
+            },
+            {
+                id: 4,
+                title: "Linen Tablecloth Set",
+                category: "home",
+                price: 500,
+                image: "../image/marketplace/Linen Tablecloth Set.jpg",
+                type: "buy",
+                condition: "Excellent",
+                seller: "SustainableHome"
+            },
+            {
+                id: 5,
+                title: "Assorted Scarves",
+                category: "accessories",
+                price: 0,
+                image: "../image/marketplace/silk-scarf.jpg",
+                type: "donate",
+                condition: "Good",
+                seller: "TextileBank"
+            },
+            {
+                id: 6,
+                title: "Organic Cotton Sheets",
+                category: "home",
+                price: 850,
+                image: "../image/marketplace/Organic Cotton Sheets.jpeg",
+                type: "buy",
+                condition: "New",
+                seller: "EcoBedding"
+            }
+        ];
+    
+        // Render Marketplace Items
+        function renderMarketplaceItems(category = 'all') {
+            const marketplaceGrid = document.querySelector('.marketplace-grid');
+            marketplaceGrid.innerHTML = '';
+    
+            const filteredItems = category === 'all' 
+                ? marketplaceItems 
+                : marketplaceItems.filter(item => item.category === category);
+    
+            filteredItems.forEach(item => {
+                const itemElement = document.createElement('div');
+                itemElement.className = 'marketplace-item';
+                itemElement.innerHTML = `
+                    <img src="${item.image}" alt="${item.title}">
+                    <div class="item-info">
+                        <h4>${item.title}</h4>
+                        <p class="item-condition">Condition: ${item.condition}</p>
+                        ${item.type === 'buy' 
+                            ? `<p class="item-price">${item.price.toFixed(2)}</p>` 
+                            : `<p class="item-price donate-badge">FREE</p>`}
+                        <p class="item-seller">From: ${item.seller}</p>
+                        <button class="item-action-btn ${item.type === 'buy' ? 'btn-buy' : 'btn-donate'}" 
+                                data-id="${item.id}" 
+                                data-type="${item.type}">
+                            ${item.type === 'buy' ? 'Buy Now' : 'Donate'}
+                        </button>
+                    </div>
+                `;
+                marketplaceGrid.appendChild(itemElement);
+            });
+    
+            // Add event listeners to the action buttons
+            document.querySelectorAll('.item-action-btn').forEach(btn => {
+                btn.addEventListener('click', handleItemAction);
+            });
+        }
+    
+        // Handle Buy/Donate Actions
+        function handleItemAction(e) {
+            const itemId = parseInt(e.target.getAttribute('data-id'));
+            const actionType = e.target.getAttribute('data-type');
+            const item = marketplaceItems.find(i => i.id === itemId);
+    
+            if (!item) return;
+    
+            // Check if user is logged in
+            const isLoggedIn = document.querySelector('.btn-login').classList.contains('logged-in');
+            
+            if (!isLoggedIn) {
+                alert(`Please login to ${actionType} items.`);
+                document.getElementById('login-modal').style.display = 'block';
+                return;
+            }
+    
+            if (actionType === 'buy') {
+                // Buy item flow
+                const confirmBuy = confirm(`Buy "${item.title}" for $${item.price.toFixed(2)}?\n\nSeller: ${item.seller}\nCondition: ${item.condition}`);
+                
+                if (confirmBuy) {
+                    // In a real app, this would process payment
+                    alert(`Purchase confirmed!\n\n${item.title} will be shipped to you. Thank you for supporting sustainable fashion!`);
+                    
+                    // Add points for buying second-hand
+                    const currentPoints = parseInt(document.getElementById('user-points').textContent);
+                    const pointsEarned = 10; // 10 points for buying from marketplace
+                    const newPoints = currentPoints + pointsEarned;
+                    document.getElementById('user-points').textContent = newPoints;
+                    
+                    setTimeout(() => {
+                        alert(`You earned ${pointsEarned} EcoPoints for buying second-hand!`);
+                    }, 100);
+                }
+            } else {
+                // Donate item flow
+                const confirmDonate = confirm(`Donate "${item.title}"?\n\nThis item will be sent to: ${item.seller}\n\nYou'll earn EcoPoints for your donation.`);
+                
+                if (confirmDonate) {
+                    // In a real app, this would schedule pickup/dropoff
+                    alert(`Donation confirmed!\n\nPlease prepare your items for pickup or drop-off. Thank you for your contribution!`);
+                    
+                    // Add points for donating
+                    const currentPoints = parseInt(document.getElementById('user-points').textContent);
+                    const pointsEarned = 15; // 15 points for donating
+                    const newPoints = currentPoints + pointsEarned;
+                    document.getElementById('user-points').textContent = newPoints;
+                    
+                    setTimeout(() => {
+                        alert(`You earned ${pointsEarned} EcoPoints for donating textiles!`);
+                    }, 100);
+                }
+            }
+        }
+    
+        // Marketplace Tab Switching
+        document.querySelectorAll('.market-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.market-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                const category = this.getAttribute('data-category');
+                renderMarketplaceItems(category);
+            });
+        });
+    
+        // List Your Items Button
+        document.querySelector('.marketplace-cta .btn-primary')?.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const isLoggedIn = document.querySelector('.btn-login').classList.contains('logged-in');
+            
+            if (!isLoggedIn) {
+                alert('Please login to list your items.');
+                document.getElementById('login-modal').style.display = 'block';
+                return;
+            }
+            
+            // In a real app, this would open a form to list items
+            alert('Item listing form would open here.\n\nYou can:\n- Upload photos\n- Set price or mark as donation\n- Describe condition\n- Choose pickup/delivery options');
+        });
+    
+        // Initialize the marketplace on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            renderMarketplaceItems();
+        });
+    </script>
+    <!-- Newsletter Section -->
+    <section class="newsletter">
+        <div class="container">
+            <div class="newsletter-content">
+                <h3>Stay Updated on Sustainability</h3>
+                <p>Subscribe to our newsletter for recycling tips, exclusive rewards, and community highlights.</p>
+            </div>
+            <form class="newsletter-form">
+                <input type="email" placeholder="Your email address" required>
+                <button type="submit" class="btn-primary">Subscribe</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>EcoThreads</h4>
+                    <p>Making textile recycling easy, rewarding, and accessible for everyone.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#recycle">Recycle</a></li>
+                        <li><a href="#marketplace">Marketplace</a></li>
+                        <li><a href="#rewards">Rewards</a></li>
+                        <li><a href="#community">Community</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#">FAQs</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Contact</h4>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Green St, Eco City</li>
+                        <li><i class="fas fa-phone"></i> 9176281437</li>
+                        <li><i class="fas fa-envelope"></i> tracknrecycle.com</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 TracknRecycle. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
+    <script src="js/app.js"></script>
+    <script src="js/map.js"></script>
+    <script src="js/auth.js"></script>
+</body>
+</html>
